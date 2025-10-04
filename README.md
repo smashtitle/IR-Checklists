@@ -19,11 +19,17 @@ I'm currently reviewing how to proceed with this project. In time, the humble ch
 The source TOML/YAML files may even form the basis for a site, where folks can search based on keyword, sort by event ID, taxonomy, etc.
 
 Here are some other resources related to Windows event logs that you may find useful:
+
 [Ultimate Windows Security Log Encyclopedia](https://www.ultimatewindowssecurity.com/securitylog/encyclopedia/default.aspx)
+
 [German BSI FOIS Configuration Recommendations for Windows Logging](https://www.bsi.bund.de/SharedDocs/Downloads/EN/BSI/Cyber-Security/SiSyPHuS/AP10/Logging_Configuration_Guideline.pdf?__blob=publicationFile&v=5)
+
 [13cube’s Impacket Exec Commands Cheat Sheet](https://cdn.13cubed.com/downloads/impacket_exec_commands_cheat_sheet.pdf)
+
 [JPCERT/CC’s Tool Analysis Result Sheet](https://jpcertcc.github.io/ToolAnalysisResultSheet)
+
 [The main Sigma rule repository](https://github.com/SigmaHQ/sigma)
+
 [Yamato Security's Windows Event Log Configuration Guide For DFIR And Threat Hunting](https://github.com/Yamato-Security/EnableWindowsLogSettings)
 
 
