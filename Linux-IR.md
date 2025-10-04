@@ -1,0 +1,98 @@
+### Device Profiling
+- Computer name: `/etc/hostname`, in live response `hostname` or `cat /proc/sys/kernel/hostname`
+- Time zone: Ubuntu `cat /etc/timezone`, RHEL/Ubuntu `ls -l /etc/localtime`
+- Hosts file: `/etc/hosts`
+- Linux distro and version: `cat /etc/os-release`, Ubuntu `cat /etc/lsb-release`, RHEL `cat /etc/redhat-release`, Ubuntu `lsb_release -a`, `hostnamectl`
+- `/etc/logrotate.conf` logrotate interval, days of retained data, configuration files
+- Firewall configuration files, logs
+- `btmp` logs (failed logins)
+- `boot.log` Time of last boot, logs scripts/actions (note: not always recorded). What services were started (attacker persistence or malicious activity)?
+- `/etc/fstab` filesystems available to mount
+- `/etc/group` user groups info
+- `/etc/sudoers` default sudo security policy config
+- `/proc/modules` loaded kernel modules
+
+### Authentication
+- Most distros capture account use data by default. Data includes: timestamps, username, login source, auth mechanism. Logs can be plaintext or binary format.
+- Modified user accounts:
+	- [ ] `/etc/passwd`
+	- [ ] `/etc/shadow`
+	- [ ] `/etc/group`
+	- [ ] `/etc/sudoers`
+	- [ ] `/etc/sudoers.d/*`
+	- [ ] `/home/user/.ssh`
+	- [ ] `/root/.ssh`
+- Unreliable login logs:
+			- [ ] `/var/log/lastlog` displays last login time for users on the system. Unreliable with terminal logins
+			- [ ] `/var/log/faillog` records failed auth events, not on RHEL. Better to use `/var/log/secure/auth.log` on RHEL
+- [ ] Auth messages RHEL `/var/log/secure` Ubuntu `/var/log/auth.log`
+	- Contains user login data and privilege use, ie, using sudo to install a package or root adding a new user account
+- [ ] Binary login logs:
+	- [ ] `/var/run/utmp` users/sessions currently logged in
+	- [ ] `/var/log/wtmp` historical utmp data for CentOS/RedHat hosts. Contains a log of the most recent successful terminal logins, with: username, terminal application (pts stands for pseudo terminal), IP addr if remote, logon/logoff time, connection duration.
+	- [ ] `/var/log/btmp` failed login events. Artifacts include: username, terminal, IP addr, timestamp of login attempt. End time is not reliable.
+
+### Uncategorised Logs
+- [ ] `known_hosts` file for lateral movement
+- [ ] Strange entries in shell history `.bash_history`, `.zsh_history`. Note timestamps can be misleading
+- [ ] Text editor history files `.viminfo`
+- [ ] `.lesshst`
+- [ ] `/dev/shm`
+- [ ] Strange networking
+- [ ] Initramfs
+- [ ] Most system logs: `/var/logs` or the journal at `/var/log/journal/UUID/*.jog`. UUID is the unique machine id, confirm via `cat /etc/machine-id`
+	- [ ] Audit logs, if they're not default and we can ingest them into ELK/Splunk `/var/log/audit/audit.log`
+	- [ ] Global system log RHEL `/var/log/messages` or Ubuntu `/var/log/syslog`: kernel messages, daemon messages, auth messages (but not successful logon attempts), ... (grep for root, CMD, Usb)
+		- [ ] Syslog configuration files
+		- [ ] Running services `/var/log/daemon.log`. Not enabled by default, most distros send to Journal or syslog now. Can record configuration changes.
+		- [ ] Kernel messages `/var/log/dmesg` or `/var/log/messages`, Ubuntu also `/var/log/kern.log`. Probably not very useful for IR
+	- [ ] `/var/log/kern.log` kernel messages, ie, system crashes, driver malfunctions. No longer recorded by default on Ubuntu.
+- [ ] Application logs: web server, reverse proxy, database, file sharing, firewall, etc
+	- [ ] web server access logs:
+		- [ ] `/var/log/nginx` primary DFIR access log
+		- [ ] `/var/log/apache2` primary DFIR access log
+		- [ ] `/var/log/httpd` RHEL/CentOS httpd access log
+		- [ ] `ssl_access_log` contains IP addr of requestor, timestamp, request string, response code, response size
+		- [ ] `ssl_request_log` same as `ssl_access_log`
+		- [ ] `ssl_error_log` effectively identical to `error_log`
+	- [ ] web server `error_log` has timestamp, severity, process ID, error message
+	- [ ] ftpd logs:
+		- [ ] `/etc/vsftpd.conf` Ubuntu vsftpd config (can confirm with `systemctl status vsftpd`), RHEL `/etc/vsftpd/vsftpd.conf`
+		- [ ] `.ftp_history`, `.sftp_history`, etc
+	- [ ] database config: `/etc/mysql/my.cnf` or `/etc/mysql/mysql.conf.d/mysqld.cnf` or other sub-folders
+	- [ ] database logs:
+		- [ ] MySQL logging configured using variable `general_log`, ie `show variables like 'general_log%';`
+		- [ ] MySQL and MariaDB error log actually contains more info, ie startup/shutdown messages, connection/auth, slow query log events, replication events, general server activity
+		- [ ] `.mysql_history`
+	- [ ] Samba configuration at `smb.conf`. Default logging does not effectively record user activity
+	- [ ] Firewall logs:
+		- [ ] iptables doesn't have native logging, sends to kernel log (check `dmesg` or `journalctl -t iptables`) or uses the module ULOG to send logs to syslog.
+		- [ ] ufw logging isn't enabled by default, can be turned on with `ufw logging on` and subsequently found at `/var/log/ufw.log`
+		- [ ] firewalld configured via CLI `firewall-cmd`, GUI, or XML config files. Minimal default logging; includes src/dest IPs, ports, protocols
+	- [ ] SSL/TLS logs (limited data available): 
+		- [ ] `ssl_access_log` has IP, timestamp, request, HTTP status, response size. No User-Agent/Referrer
+		- [ ] `ssl_request_log` similar to above, with cryptographic details. has IP, timestamp, encryption method, request, response size
+		- [ ] `ssl_error_log` tracks handshake errors
+	- [ ] Browser profiles:
+		- [ ] Firefox `/home/user/.mozilla/firefox`
+		- [ ] Chrome `/home/user/.config/google-chrome`
+	- [ ] Git logs `.git/logs` and config `.gitconfig`
+	- [ ] apt command installation history: `cat /var/log/apt/history.log | grep "Commandline"`
+	- [ ] dpkg package names and status: `cat /var/lib/dpkg/status | grep -E "Package:|Status:"`
+	- [ ] 
+- [ ] Cron logs `/var/log/cron`
+- [ ] Other system logs: `/var/run`
+- [ ] `.wget-hsts
+### Persistence
+- [ ] Startup scripts, ie: `.bashrc`, `rc.local`
+- [ ] Cron daemon: `cron.d`, `crontab`, `anacron`
+- [ ] Services: `/etc/systemd/system`, `/usr/lib/systemd/system`, `/etc/systemd/user`, `~/.config/systemd/user`
+- [ ] SSH keys: `/home/user/.ssh/authorized_keys`
+- [ ] Trojaned binaries
+- [ ] Library injection: inject malicious libraries via LD_PRELOAD
+- [ ] Sudoers file: `sudoers`, `sudoers.d`
+- [ ] User creation: validate `/etc/passwd`
+- [ ] Kernel modules: LKM
+- [ ] User profiles: `.bash_aliases`, .profile
+
+### Execution
