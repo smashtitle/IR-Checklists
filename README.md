@@ -16,7 +16,7 @@ I'm currently reviewing how to proceed with this project. In time, the humble ch
 8. URL(s) to MS Learn or other resources
 9. Tag(s)
 
-The source TOML/YAML files may even form the basis for a site, where folks can sort based on keyword, event ID, taxonomy, etc.
+The source TOML/YAML files may even form the basis for a site, where folks can search based on keyword, sort by event ID, taxonomy, etc.
 
 Here are some other resources related to Windows event logs that you may find useful:
 [Ultimate Windows Security Log Encyclopedia](https://www.ultimatewindowssecurity.com/securitylog/encyclopedia/default.aspx)
