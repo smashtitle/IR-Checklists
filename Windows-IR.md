@@ -94,7 +94,7 @@
 - [ ] Sysmon 8: CreateRemoteThread. Detects some process‑injection methods. Microsoft-Windows-Sysmon/Operational [MS Learn](https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon#event-id-8-createremotethread)
 - [ ] Sysmon 11: FileCreate. Logs creation/overwrite, may indicate payload or tool staging. Microsoft-Windows-Sysmon/Operational [MS Learn](https://learn.microsoft.com/en-us/sysinternals/downloads/sysmon#event-id-11-filecreate)
 - [ ] 1: Triggers when you mount a VHD. Microsoft-Windows-Sysmon/Operational
-- [ ] 21: Remote desktop services: shell start. Occurs when a user successfully establishes a session and the shell starts, confirming a successful interactive logon. Microsoft-Windows-Sysmon/Operational
+- [ ] 21: Remote desktop services: shell start. Occurs when a user successfully establishes a session and the shell starts, confirming a successful interactive logon.
 - [ ] 1149: RDP user auth succeeded, combine with EID4624/4625 to track lateral movement. Microsoft-Windows-TerminalServices-RemoteConnectionManager/Operational
 - [ ] 4627: Group membership information, shows the full AD group list for every successful logon (useful to detect changes in privileges). Security [MS Learn](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-4627)
 - [ ] 5154: WFP permitted an application to listen on a port. Detects unexpected services binding, often precedes C2 beaconing. Security [MS Learn](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-5154)
